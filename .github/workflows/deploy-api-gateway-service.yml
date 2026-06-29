@@ -1,15 +1,15 @@
-name: Deploy workspace Service
+name: Deploy API Gateway Service
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'workspace-service/**'
+      - 'api-gateway/**'
 
 env:
-  SERVICE_NAME: workspace-service
-  IMAGE_NAME: rakshithdb123/aiprojectbuddy-workspace-service
+  SERVICE_NAME: api-gateway
+  IMAGE_NAME: rakshithdb123/aiprojectbuddy-api-gateway
 
 permissions:
   id-token: write
