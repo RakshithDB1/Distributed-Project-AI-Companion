@@ -31,7 +31,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Make mvnw executable
-        run: chmod +x ./${{ env.SERVICE_NAME }}/mvnw
+        working-directory: ./${{ env.SERVICE_NAME }}
+        run: chmod +x mvnw
 
       - name: Build and Install Common Lib
         working-directory: ./common-lib
