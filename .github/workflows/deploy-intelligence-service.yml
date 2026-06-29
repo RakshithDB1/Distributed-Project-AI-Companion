@@ -1,4 +1,4 @@
-name: Deploy Config Service
+name: Deploy intelligence Service
 
 on:
   push:

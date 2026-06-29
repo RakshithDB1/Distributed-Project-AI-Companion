@@ -1,4 +1,4 @@
-name: Deploy Config Service
+name: Deploy workspace Service
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - 'workspace-service/**'
 
 env:
-  SERVICE_NAME: intelligence-service
+  SERVICE_NAME: workspace-service
   IMAGE_NAME: rakshithdb123/aiprojectbuddy-workspace-service
 
 permissions:
