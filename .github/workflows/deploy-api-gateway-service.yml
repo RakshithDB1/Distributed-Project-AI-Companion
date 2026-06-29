@@ -30,6 +30,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+      - name: Make Maven Wrappers Executable
+        run: |
+          find . -type f -name "mvnw" -exec chmod +x {} \;
+
+      - name: Verify Maven Wrappers
+        run: |
+          find . -type f -name "mvnw" -exec ls -l {} \;
 
       - name: Build and Install Common Lib
         working-directory: ./common-lib
