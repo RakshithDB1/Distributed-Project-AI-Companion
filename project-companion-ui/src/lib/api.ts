@@ -1,6 +1,6 @@
 import { ChatMessage, DeployResponse, FileNode, LoginCredentials, LoginResponse, ProjectSummaryResponse, ProjectRequest, ProjectResponse, ProjectMember, ProjectRole, SignupRequest, AuthResponse } from "./types";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://api.codingshuttle.in";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://api.distributedaiprojectbuddy.com";
 
 export const getAuthToken = () => localStorage.getItem("auth_token");
 
