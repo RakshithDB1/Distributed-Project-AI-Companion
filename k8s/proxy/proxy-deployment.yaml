@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: lovable-me-proxy
-          image: anuj55149/lovable-me-proxy:latest
+          image: rakshithdb123/projectbuddy-proxy:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

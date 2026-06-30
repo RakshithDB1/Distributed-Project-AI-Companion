@@ -1,6 +1,16 @@
 import { useState } from "react";
-import { ChevronRight, ChevronDown, File, Folder, FolderOpen, FileCode, FileJson, FileText, Image } from "lucide-react";
-import { FileNode } from "@/lib/api";
+import {
+  ChevronRight,
+  ChevronDown,
+  File,
+  Folder,
+  FolderOpen,
+  FileCode,
+  FileJson,
+  FileText,
+  Image,
+} from "lucide-react";
+import { FileNode } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface FileTreeProps {
@@ -12,7 +22,7 @@ interface FileTreeProps {
 
 const getFileIcon = (name: string) => {
   const ext = name.split(".").pop()?.toLowerCase();
-  
+
   switch (ext) {
     case "ts":
     case "tsx":
@@ -37,7 +47,7 @@ const getFileIcon = (name: string) => {
 
 const getFileColor = (name: string) => {
   const ext = name.split(".").pop()?.toLowerCase();
-  
+
   switch (ext) {
     case "ts":
     case "tsx":
@@ -66,12 +76,21 @@ interface FileTreeItemProps {
   onSelectFile: (path: string) => void;
 }
 
-function FileTreeItem({ node, depth, selectedPath, onSelectFile }: FileTreeItemProps) {
+function FileTreeItem({
+  node,
+  depth,
+  selectedPath,
+  onSelectFile,
+}: FileTreeItemProps) {
   const [isExpanded, setIsExpanded] = useState(depth < 2);
-  
+
   const isDirectory = node.type === "directory";
   const isSelected = selectedPath === node.path;
-  const FileIcon = isDirectory ? (isExpanded ? FolderOpen : Folder) : getFileIcon(node.name);
+  const FileIcon = isDirectory
+    ? isExpanded
+      ? FolderOpen
+      : Folder
+    : getFileIcon(node.name);
   const fileColor = isDirectory ? "text-amber-400" : getFileColor(node.name);
 
   const handleClick = () => {
@@ -85,10 +104,7 @@ function FileTreeItem({ node, depth, selectedPath, onSelectFile }: FileTreeItemP
   return (
     <div>
       <div
-        className={cn(
-          "file-tree-item",
-          isSelected && "active"
-        )}
+        className={cn("file-tree-item", isSelected && "active")}
         style={{ paddingLeft: `${depth * 12 + 8}px` }}
         onClick={handleClick}
       >
@@ -104,7 +120,7 @@ function FileTreeItem({ node, depth, selectedPath, onSelectFile }: FileTreeItemP
         <FileIcon className={cn("w-4 h-4 shrink-0", fileColor)} />
         <span className="truncate text-sm">{node.name}</span>
       </div>
-      
+
       {isDirectory && isExpanded && node.children && (
         <div>
           {node.children.map((child) => (
@@ -122,14 +138,22 @@ function FileTreeItem({ node, depth, selectedPath, onSelectFile }: FileTreeItemP
   );
 }
 
-export function FileTree({ files, selectedPath, onSelectFile, isLoading }: FileTreeProps) {
+export function FileTree({
+  files,
+  selectedPath,
+  onSelectFile,
+  isLoading,
+}: FileTreeProps) {
   if (isLoading) {
     return (
       <div className="p-4 space-y-2">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="flex items-center gap-2 animate-pulse">
             <div className="w-4 h-4 bg-muted rounded" />
-            <div className="h-4 bg-muted rounded flex-1" style={{ width: `${50 + i * 10}%` }} />
+            <div
+              className="h-4 bg-muted rounded flex-1"
+              style={{ width: `${50 + i * 10}%` }}
+            />
           </div>
         ))}
       </div>
