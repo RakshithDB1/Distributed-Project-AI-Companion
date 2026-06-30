@@ -18,7 +18,6 @@ public class CorsConfig {
         corsConfig.setAllowedOrigins(Arrays.asList(
                 "http://www.distributedaiprojectbuddy.com",
                 "http://distributedaiprojectbuddy.com",
-                "http://api.distributedaiprojectbuddy.com",
                 "http://localhost:5173"
         ));
         corsConfig.setMaxAge(3600L);

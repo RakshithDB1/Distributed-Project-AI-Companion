@@ -133,7 +133,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (userId == null) {
             return false;
         }
-        PlanDto plan = accountClient.getCurrentSubscribedPlanByUser();
+        PlanDto plan = accountClient.getCurrentSubscribedPlanByUser(userId);
 
         int maxAllowed = plan.maxProjects();
         int ownedCount = projectMemberRepository.countProjectOwnedByUser(userId);
