@@ -22,5 +22,5 @@ public interface SubscriptionService {
 
     void markSubscriptionPastDue(String subId);
 
-    PlanDto getCurrentSubscribedPlanByUser();
+    PlanDto getCurrentSubscribedPlanByUser(Long userId);
 }

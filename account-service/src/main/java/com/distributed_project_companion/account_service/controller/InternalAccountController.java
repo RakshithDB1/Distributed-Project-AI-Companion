@@ -34,8 +34,8 @@ public class InternalAccountController {
                 .map(userMapper::toUserDto);
     }
 
-    @GetMapping("/billing/current-plan")
-    public PlanDto getCurrentSubscribedPlan() {
-        return subscriptionService.getCurrentSubscribedPlanByUser();
+    @GetMapping("/billing/current-plan/{userId}")
+    public PlanDto getCurrentSubscribedPlan(@PathVariable Long userId) {
+        return subscriptionService.getCurrentSubscribedPlanByUser(userId);
     }
 }

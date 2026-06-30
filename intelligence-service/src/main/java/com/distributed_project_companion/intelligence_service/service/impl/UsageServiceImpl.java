@@ -35,7 +35,7 @@ public class UsageServiceImpl implements UsageService {
     @Override
     public void checkDailyTokensUsage() {
         Long userId = authUtil.getCurrentUserId();
-        PlanDto plan = accountClient.getCurrentSubscribedPlanByUser();
+        PlanDto plan = accountClient.getCurrentSubscribedPlanByUser(userId);
 
         LocalDate today = LocalDate.now();
 

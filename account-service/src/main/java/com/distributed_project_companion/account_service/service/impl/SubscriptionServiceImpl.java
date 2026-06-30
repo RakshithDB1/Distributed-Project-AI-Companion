@@ -146,9 +146,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public PlanDto getCurrentSubscribedPlanByUser() {
-        SubscriptionResponse subscriptionResponse = getCurrentSubscription();
+    public PlanDto getCurrentSubscribedPlanByUser(Long userId) {
+        SubscriptionResponse subscriptionResponse = getCurrentSubscriptionWithExistingUserId(userId);
         return subscriptionResponse.plan();
+    }
+
+    private SubscriptionResponse getCurrentSubscriptionWithExistingUserId(Long userId) {
+        var currentSubscription = subscriptionRepository.findByUserIdAndStatusIn(userId, Set.of(
+                SubscriptionStatus.ACTIVE, SubscriptionStatus.PAST_DUE,
+                SubscriptionStatus.TRIALING
+        )).orElse(
+                new Subscription()
+        );
+
+        return subscriptionMapper.toSubscriptionResponse(currentSubscription);
     }
 
     ///  Utility methods
