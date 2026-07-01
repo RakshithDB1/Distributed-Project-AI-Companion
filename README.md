@@ -1,174 +1,133 @@
-# Distributed AI Project Companion
+# 🚀 Distributed AI Project Companion
 
-## Overview
-
-Distributed AI Project Companion is a cloud-native microservices platform that enables users to create software projects, manage files, collaborate with team members, generate code using AI, and deploy preview environments on Kubernetes.
-
-The platform follows a distributed microservices architecture built with Spring Boot, Spring Cloud, PostgreSQL, Redis, MinIO, Kubernetes, and OpenAI-compatible LLMs.
+> A cloud-native AI-powered software development platform built with Spring Boot Microservices, Kubernetes, OpenAI, React, PostgreSQL, Redis, MinIO, and Google Kubernetes Engine (GKE).
 
 ---
 
-# Architecture
+# 📋 Table of Contents
 
-## High-Level Architecture
+* Overview
+* System Architecture
+* Microservices Architecture
+* Technology Stack
+* Database Design
+* API Documentation
+* Local Development Setup
+* Docker Deployment
+* Kubernetes Deployment
+* CI/CD Pipeline
+* Security Architecture
+* Monitoring & Troubleshooting
+* Future Roadmap
 
-```text
-┌─────────────────────┐
-│      React UI       │
-│    (Vite + TS)      │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│     API Gateway     │
-└──────────┬──────────┘
-           │
- ┌─────────┼─────────┐
- │         │         │
- ▼         ▼         ▼
+---
 
-Account   Workspace  Intelligence
-Service   Service    Service
+# 🎯 Overview
 
- │            │          │
- ▼            ▼          ▼
+Distributed AI Project Companion enables developers to:
 
-Postgres   Postgres   Postgres
-            MinIO
-            Redis
+* Create and manage software projects
+* Collaborate with team members
+* Store and manage project files
+* Generate code using AI
+* Chat with project-aware AI assistants
+* Deploy preview environments automatically
+* Scale applications through Kubernetes
 
-                 │
-                 ▼
+---
 
-           Kubernetes
-        Preview Deployments
+# 🏗️ System Architecture
+
+```mermaid
+flowchart TB
+
+    UI[React + Vite Frontend]
+
+    GW[API Gateway]
+
+    ACC[Account Service]
+    WS[Workspace Service]
+    INT[Intelligence Service]
+
+    PG1[(Account DB)]
+    PG2[(Workspace DB)]
+    PG3[(Intelligence DB)]
+
+    REDIS[(Redis)]
+    MINIO[(MinIO)]
+
+    OPENAI[OpenAI/OpenRouter]
+
+    K8S[Kubernetes Cluster]
+
+    UI --> GW
+
+    GW --> ACC
+    GW --> WS
+    GW --> INT
+
+    ACC --> PG1
+
+    WS --> PG2
+    WS --> REDIS
+    WS --> MINIO
+    WS --> K8S
+
+    INT --> PG3
+    INT --> OPENAI
+
+    INT --> WS
+    INT --> ACC
 ```
 
 ---
 
-# Microservices
+# 🔧 Microservices Architecture
 
-## 1. Account Service
+```mermaid
+flowchart LR
 
-Responsibilities:
+    AccountService --> AccountDB
 
-* User registration and login
-* JWT authentication
-* Subscription management
-* Stripe billing integration
-* Usage limits management
+    WorkspaceService --> WorkspaceDB
+    WorkspaceService --> Redis
+    WorkspaceService --> MinIO
 
-Database:
+    IntelligenceService --> IntelligenceDB
+    IntelligenceService --> OpenAI
 
-* PostgreSQL
+    IntelligenceService --> WorkspaceService
+    IntelligenceService --> AccountService
 
-Key Entities:
+    Gateway --> AccountService
+    Gateway --> WorkspaceService
+    Gateway --> IntelligenceService
 
-* User
-* Plan
-* Subscription
+    Discovery[Eureka Server]
 
----
-
-## 2. Workspace Service
-
-Responsibilities:
-
-* Project management
-* Team collaboration
-* File tree management
-* File storage
-* Kubernetes preview deployments
-
-Storage:
-
-* PostgreSQL
-* MinIO
-* Redis
-
-Key Entities:
-
-* Project
-* ProjectMember
-* ProjectFile
-* Preview
+    AccountService -.-> Discovery
+    WorkspaceService -.-> Discovery
+    IntelligenceService -.-> Discovery
+    Gateway -.-> Discovery
+```
 
 ---
 
-## 3. Intelligence Service
+# 📦 Service Responsibilities
 
-Responsibilities:
-
-* AI chat
-* Context gathering
-* Code generation
-* File-aware AI assistance
-
-Database:
-
-* PostgreSQL
-
-Key Entities:
-
-* ChatSession
-* ChatMessage
-* ChatEvent
-* UsageLog
-
-Integrations:
-
-* OpenAI/OpenRouter
-* Workspace Service
-* Account Service
+| Service              | Responsibility                   |
+| -------------------- | -------------------------------- |
+| Account Service      | Authentication, Users, Billing   |
+| Workspace Service    | Projects, Files, Team Members    |
+| Intelligence Service | AI Chat, Code Generation         |
+| API Gateway          | Routing, Security                |
+| Config Service       | Centralized Configuration        |
+| Discovery Service    | Service Discovery                |
+| Common Lib           | Shared DTOs, JWT, Feign Security |
 
 ---
 
-## 4. API Gateway
-
-Responsibilities:
-
-* Single entry point
-* Routing
-* CORS management
-* Request forwarding
-
----
-
-## 5. Discovery Service
-
-Responsibilities:
-
-* Service registration
-* Service discovery
-
-Technology:
-
-* Netflix Eureka
-
----
-
-## 6. Config Service
-
-Responsibilities:
-
-* Centralized configuration
-* Environment management
-
----
-
-## 7. Common Library
-
-Shared functionality:
-
-* JWT authentication filter
-* Feign interceptors
-* DTOs
-* Security utilities
-* Shared configurations
-
----
-
-# Technology Stack
+# 🛠️ Technology Stack
 
 ## Backend
 
@@ -176,210 +135,325 @@ Shared functionality:
 * Spring Boot 3
 * Spring Security
 * Spring Cloud
-* Spring Data JPA
-* OpenFeign
 * Spring AI
+* OpenFeign
+* JPA / Hibernate
 * MapStruct
-
-## Databases
-
-* PostgreSQL
-* Redis
-
-## Object Storage
-
-* MinIO
-
-## Infrastructure
-
-* Docker
-* Kubernetes (GKE)
-* NGINX Ingress
 
 ## Frontend
 
 * React
 * TypeScript
 * Vite
-* Tailwind CSS
+* TailwindCSS
 
-## AI
+## Storage
 
-* OpenAI
-* OpenRouter (optional)
-* Spring AI
-
----
-
-# Repository Structure
-
-```text
-.
-├── account-service
-├── workspace-service
-├── intelligence-service
-├── api-gateway
-├── config-service
-├── discovery-service
-├── common-lib
-├── project-companion-ui
-├── k8s
-│   ├── infra
-│   ├── stateful
-│   ├── services
-│   └── proxy
-└── .github/workflows
-```
-
----
-
-# Prerequisites
-
-Install the following:
-
-* Java 21
-* Maven 3.9+
-* Node.js 20+
-* Docker Desktop
-* Kubernetes CLI (kubectl)
-* MinIO
 * PostgreSQL
 * Redis
-* Git
+* MinIO
 
-Optional:
+## Infrastructure
 
-* Google Cloud SDK
-* GKE Cluster
+* Docker
+* Kubernetes
+* GKE
+* NGINX Ingress
+
+## CI/CD
+
+* GitHub Actions
+* Docker Hub
+* Google Cloud Workload Identity Federation
 
 ---
 
-# Environment Variables
+# 🗄️ Database Design
 
-Create a `.env` file.
+## Account Service ER Diagram
 
-```env
-JWT_SECRET=your-secret
+```mermaid
+erDiagram
 
-OPENAI_API_KEY=your-openai-key
+    USER ||--o{ SUBSCRIPTION : owns
+    PLAN ||--o{ SUBSCRIPTION : assigned
 
-POSTGRES_USERNAME=postgres
-POSTGRES_PASSWORD=password
+    USER {
+        bigint id
+        string email
+        string password
+        string role
+        timestamp created_at
+    }
 
-REDIS_HOST=localhost
-REDIS_PORT=6379
+    PLAN {
+        bigint id
+        string name
+        int max_projects
+        int ai_tokens
+    }
 
-MINIO_ACCESS_KEY=minioadmin
-MINIO_SECRET_KEY=minioadmin
-
-STRIPE_SECRET_KEY=sk_xxx
-STRIPE_WEBHOOK_SECRET=whsec_xxx
+    SUBSCRIPTION {
+        bigint id
+        string stripe_customer_id
+        string status
+        timestamp expiry_date
+    }
 ```
 
 ---
 
-# Local Development Setup
+## Workspace Service ER Diagram
 
-## 1. Build Shared Library
+```mermaid
+erDiagram
+
+    PROJECT ||--o{ PROJECT_MEMBER : contains
+    PROJECT ||--o{ PROJECT_FILE : contains
+    PROJECT ||--o{ PREVIEW : deploys
+
+    PROJECT {
+        bigint id
+        string name
+        string description
+        bigint owner_id
+    }
+
+    PROJECT_MEMBER {
+        bigint id
+        bigint user_id
+        string role
+    }
+
+    PROJECT_FILE {
+        bigint id
+        string path
+        string file_name
+        string storage_key
+    }
+
+    PREVIEW {
+        bigint id
+        string deployment_name
+        string url
+    }
+```
+
+---
+
+## Intelligence Service ER Diagram
+
+```mermaid
+erDiagram
+
+    CHAT_SESSION ||--o{ CHAT_MESSAGE : contains
+    CHAT_SESSION ||--o{ CHAT_EVENT : tracks
+
+    CHAT_SESSION {
+        bigint id
+        bigint project_id
+        bigint user_id
+    }
+
+    CHAT_MESSAGE {
+        bigint id
+        string role
+        text content
+    }
+
+    CHAT_EVENT {
+        bigint id
+        string event_type
+        text details
+    }
+
+    USAGE_LOG {
+        bigint id
+        bigint user_id
+        int tokens_used
+    }
+```
+
+---
+
+# 🔐 Security Architecture
+
+```mermaid
+sequenceDiagram
+
+    User->>Gateway: Login Request
+
+    Gateway->>Account Service: Authenticate
+
+    Account Service-->>Gateway: JWT Token
+
+    Gateway-->>User: JWT Token
+
+    User->>Gateway: API Request
+
+    Gateway->>Workspace Service: Forward JWT
+
+    Workspace Service->>Common Lib: JwtAuthFilter
+
+    Common Lib-->>Workspace Service: Security Context
+
+    Workspace Service-->>User: Response
+```
+
+---
+
+# 🤖 AI Request Flow
+
+```mermaid
+sequenceDiagram
+
+    User->>Frontend: Ask AI Question
+
+    Frontend->>Gateway: Chat Request
+
+    Gateway->>Intelligence Service: Process Request
+
+    Intelligence Service->>Workspace Service: Fetch Project Context
+
+    Workspace Service-->>Intelligence Service: Files & Metadata
+
+    Intelligence Service->>OpenAI: Prompt + Context
+
+    OpenAI-->>Intelligence Service: Response
+
+    Intelligence Service-->>Frontend: Generated Code
+```
+
+---
+
+# 🌐 API Documentation
+
+## Authentication APIs
+
+### Register
+
+```http
+POST /auth/register
+```
+
+Request
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password"
+}
+```
+
+Response
+
+```json
+{
+  "id": 1,
+  "email": "user@example.com"
+}
+```
+
+---
+
+### Login
+
+```http
+POST /auth/login
+```
+
+Response
+
+```json
+{
+  "token": "jwt-token"
+}
+```
+
+---
+
+## Project APIs
+
+### Create Project
+
+```http
+POST /api/projects
+```
+
+### Get Project
+
+```http
+GET /api/projects/{projectId}
+```
+
+### Delete Project
+
+```http
+DELETE /api/projects/{projectId}
+```
+
+---
+
+## File APIs
+
+### Upload File
+
+```http
+POST /api/projects/{projectId}/files
+```
+
+### Get File Tree
+
+```http
+GET /api/projects/{projectId}/tree
+```
+
+### Download File
+
+```http
+GET /api/projects/{projectId}/files/{fileId}
+```
+
+---
+
+## AI APIs
+
+### Create Chat Session
+
+```http
+POST /api/chat/sessions
+```
+
+### Send Message
+
+```http
+POST /api/chat/{sessionId}/message
+```
+
+### Generate Code
+
+```http
+POST /api/ai/generate
+```
+
+---
+
+# 🚀 Local Development
+
+## Build Common Library
 
 ```bash
 cd common-lib
-
-chmod +x mvnw
-
 ./mvnw clean install -DskipTests
 ```
 
-Windows:
-
-```powershell
-mvnw.cmd clean install -DskipTests
-```
-
----
-
-## 2. Start Infrastructure
-
-### PostgreSQL
+## Start Backend Services
 
 ```bash
-docker run -d \
-  --name postgres \
-  -e POSTGRES_PASSWORD=password \
-  -p 5432:5432 \
-  postgres:16
-```
-
-### Redis
-
-```bash
-docker run -d \
-  --name redis \
-  -p 6379:6379 \
-  redis:7
-```
-
-### MinIO
-
-```bash
-docker run -d \
-  --name minio \
-  -p 9000:9000 \
-  -p 9001:9001 \
-  -e MINIO_ROOT_USER=minioadmin \
-  -e MINIO_ROOT_PASSWORD=minioadmin \
-  quay.io/minio/minio server /data --console-address ":9001"
-```
-
----
-
-## 3. Start Services
-
-### Config Service
-
-```bash
-cd config-service
 ./mvnw spring-boot:run
 ```
 
-### Discovery Service
-
-```bash
-cd discovery-service
-./mvnw spring-boot:run
-```
-
-### Account Service
-
-```bash
-cd account-service
-./mvnw spring-boot:run
-```
-
-### Workspace Service
-
-```bash
-cd workspace-service
-./mvnw spring-boot:run
-```
-
-### Intelligence Service
-
-```bash
-cd intelligence-service
-./mvnw spring-boot:run
-```
-
-### API Gateway
-
-```bash
-cd api-gateway
-./mvnw spring-boot:run
-```
-
----
-
-## 4. Start Frontend
+## Start Frontend
 
 ```bash
 cd project-companion-ui
@@ -389,37 +463,17 @@ npm install
 npm run dev
 ```
 
-Frontend:
-
-```text
-http://localhost:5173
-```
-
 ---
 
-# Building JARs
+# 🐳 Docker Deployment
 
-```bash
-./mvnw clean package -DskipTests
-```
-
-or
-
-```bash
-./mvnw clean install -DskipTests
-```
-
----
-
-# Docker Image Build
-
-Example:
+## Build Image
 
 ```bash
 ./mvnw compile jib:dockerBuild
 ```
 
-Push to Docker Hub:
+## Push Image
 
 ```bash
 ./mvnw compile jib:build
@@ -427,7 +481,7 @@ Push to Docker Hub:
 
 ---
 
-# Kubernetes Deployment
+# ☸️ Kubernetes Deployment
 
 ## Create Namespaces
 
@@ -437,18 +491,10 @@ kubectl create namespace lovable-core
 kubectl create namespace lovable-previews
 ```
 
-## Apply Secrets
-
-```bash
-kubectl create secret generic app-secrets \
-  --from-env-file=.env \
-  -n lovable-core
-```
-
 ## Deploy Infrastructure
 
 ```bash
-kubectl apply -f k8s/stateful/ -n lovable-core
+kubectl apply -f k8s/databases/ -n lovable-core
 ```
 
 ## Deploy Services
@@ -457,141 +503,105 @@ kubectl apply -f k8s/stateful/ -n lovable-core
 kubectl apply -f k8s/services/ -n lovable-core
 ```
 
-## Verify
+## Deploy Ingress
 
 ```bash
-kubectl get pods -n lovable-core
-
-kubectl get svc -n lovable-core
+kubectl apply -f k8s/ingress.yaml -n lovable-core
 ```
 
 ---
 
-# NGINX Ingress
+# 🔄 Deployment Flow Diagram
 
-Install:
+```mermaid
+flowchart LR
 
-```bash
-kubectl apply -f \
-https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
-```
+    DEV[Developer Push]
 
-Watch LoadBalancer:
+    GH[GitHub Actions]
 
-```bash
-kubectl get svc ingress-nginx-controller \
--n ingress-nginx -w
-```
+    BUILD[Maven Build]
 
-Apply ingress:
+    JIB[Jib Docker Build]
 
-```bash
-kubectl apply -f k8s/ingress.yaml \
--n lovable-core
-```
+    DH[Docker Hub]
 
----
+    GCP[GKE Authentication]
 
-# CI/CD Pipeline
+    K8S[Kubernetes Cluster]
 
-GitHub Actions automatically:
+    DEPLOY[Rolling Deployment]
 
-1. Builds common-lib
-2. Builds changed microservice
-3. Creates Docker image via Jib
-4. Pushes image to Docker Hub
-5. Authenticates with GCP
-6. Updates Kubernetes deployment
-7. Performs rolling deployment
-
-Required GitHub Secrets:
-
-```text
-DOCKERHUB_USERNAME
-DOCKERHUB_TOKEN
-
-GCP_PROJECT
-GCP_CLUSTER
-GCP_ZONE
-
-GCP_SERVICE_ACCOUNT
-GCP_WORKLOAD_IDENTITY_PROVIDER
+    DEV --> GH
+    GH --> BUILD
+    BUILD --> JIB
+    JIB --> DH
+    DH --> GCP
+    GCP --> K8S
+    K8S --> DEPLOY
 ```
 
 ---
 
-# AI Integration
+# 🔄 CI/CD Pipeline
 
-## OpenAI
+```mermaid
+flowchart TB
 
-```yaml
-spring:
-  ai:
-    openai:
-      api-key: ${OPENAI_API_KEY}
-```
+    Commit[Git Push]
 
-## OpenRouter
+    Workflow[GitHub Workflow]
 
-```yaml
-spring:
-  ai:
-    openai:
-      api-key: ${AI_API_KEY}
-      base-url: https://openrouter.ai/api
+    CommonLib[Build Common Lib]
+
+    ServiceBuild[Build Service]
+
+    DockerPush[Push Docker Image]
+
+    GKEAuth[Authenticate GCP]
+
+    UpdateDeploy[Update Deployment]
+
+    Rollout[Rolling Update]
+
+    Commit --> Workflow
+    Workflow --> CommonLib
+    CommonLib --> ServiceBuild
+    ServiceBuild --> DockerPush
+    DockerPush --> GKEAuth
+    GKEAuth --> UpdateDeploy
+    UpdateDeploy --> Rollout
 ```
 
 ---
 
-# Monitoring Commands
-
-View Pods
+# 📊 Monitoring Commands
 
 ```bash
 kubectl get pods -A
 ```
 
-View Logs
-
 ```bash
-kubectl logs deployment/account-service \
--n lovable-core --tail=100
+kubectl get svc -A
 ```
 
-Port Forward Database
-
 ```bash
-kubectl port-forward pod/postgres-0 \
-5432:5432
+kubectl logs deployment/account-service -n lovable-core
 ```
 
-Restart Deployment
-
 ```bash
-kubectl rollout restart deployment/account-service \
--n lovable-core
+kubectl rollout restart deployment/account-service -n lovable-core
 ```
 
 ---
 
-# Security
+# 🛣️ Future Roadmap
 
-* JWT Authentication
-* Service-to-Service Authentication
-* Feign JWT Propagation
-* Role-based Authorization
-* Stripe Webhook Validation
-* Kubernetes Secrets
-* Workload Identity Federation
-
----
-
-# Future Enhancements
-
-* Multi-model AI support
-* Vector database integration
-* RAG workflows
-* Collaborative editing
-* Multi-region deployments
-* Observability with Prometheus and Grafana
-* Distributed tracing with OpenTelemetry
+* Vector Database Integration
+* RAG-based Code Generation
+* Multi-Agent AI Workflows
+* Real-time Collaboration
+* Prometheus Monitoring
+* Grafana Dashboards
+* OpenTelemetry Tracing
+* Multi-Region Kubernetes Deployment
